@@ -4,6 +4,7 @@ require "nokogiri"
 require "json"
 require "youku"
 require "tudou"
+require "sina"
 
 module VideoParser
 end
