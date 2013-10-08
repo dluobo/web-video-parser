@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 
 gem "nokogiri"
+gem "activesupport"
 
 group :development do
   gem "rspec", "~> 2.8.0"
