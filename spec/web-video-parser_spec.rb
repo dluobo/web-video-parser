@@ -17,12 +17,6 @@ describe VideoParser do
       @youku_video.files.count.should be 1
     }
 
-    describe VideoParser::Youku::Parser do
-      it {
-        json = @youku_video.parser.get_json
-        json.should_not be_nil
-      }
-    end
   end
 
   describe VideoParser::Tudou do

@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 module VideoParser
   class Tudou
-    class Parser
-      # API_URL = 'http://v2.tudou.com/v2/cdn?id='
-      # API_URL = 'http://v2.tudou.com/v?it='
-      API_URL = 'http://v2.tudou.com/v?vn=02&st=3&it='
-      # API_URL = 'http://v2.tudou.com/v.action?vn=02&pw=&ui=0&st=3&hd=1&sid=11000&retc=1&mt=0&it=141661957'
+    # API_URL = 'http://v2.tudou.com/v2/cdn?id='
+    # API_URL = 'http://v2.tudou.com/v?it='
+    API_URL = 'http://v2.tudou.com/v?vn=02&st=3&it='
+    # API_URL = 'http://v2.tudou.com/v.action?vn=02&pw=&ui=0&st=3&hd=1&sid=11000&retc=1&mt=0&it=141661957'
 
+    def _request_url
+      "#{API_URL}#{self.uid}"
+    end
+
+    class Parser
       def initialize(video)
         @video = video
       end
@@ -28,28 +32,14 @@ module VideoParser
 
           path = uri.query.nil? ? uri.path : "#{uri.path}?#{uri.query}"
           req  = Net::HTTP::Get.new(path, {
-                                      'User-Agent' => @video.user_agent,
-                                      'X-Forwarded-For' => @video.x_forwarded_for_ip
+                                      'User-Agent' => @video.user_agent#,
+                                      #'X-Forwarded-For' => @video.x_forwarded_for_ip
                                     })
           
           response = site.request(req)
         rescue Exception => ex
           p ex
         end
-      end
-
-      private
-
-      def _request_url
-        p "#{API_URL}#{@video.uid}"
-      end
-    end
-
-    class TudouVideoFile
-      attr_reader :url, :seconds
-      def initialize(url, seconds)
-        @url = url
-        @seconds = seconds
       end
     end
 
@@ -68,6 +58,9 @@ module VideoParser
       # 好几种风格的地址
 
       @parser = Parser.new self
+      # @parser = Parser.new(_request_url, :xml)
+      #   .headers "User-Agent"      => self.user_agent,
+      #            "X-Forwarded-For" => self.x_forwarded_for_ip
       @x_forwarded_for_ip = ''
     end
 
@@ -77,24 +70,24 @@ module VideoParser
 
     def cover_url
       @cover_url ||= begin
-                             match = @parser.get_page.match(/pic:(.+)/)
-                             match = match[1].match /(http:\/\/[^"']+)/
-                             return match[0]
-                           rescue Exception => e
-                             p "cover_url 解析错误"
-                             ''
-                           end
+                       match = @parser.get_page.match(/pic:(.+)/)
+                       match = match[1].match /(http:\/\/[^"']+)/
+                       return match[0]
+                     rescue Exception => e
+                       p "cover_url 解析错误"
+                       ''
+                     end
     end
 
     def title
       @title ||= begin
-                             match = @parser.get_page.match(/kw:(.+)/)
-                             str = match[1].gsub('"', '').gsub("'", '').strip
-                             return str
-                           rescue Exception => e
-                             p "title 解析错误"
-                             ''
-                           end
+                   match = @parser.get_page.match(/kw:(.+)/)
+                   str = match[1].gsub('"', '').gsub("'", '').strip
+                   return str
+                 rescue Exception => e
+                   p "title 解析错误"
+                   ''
+                 end
     end
 
     def uid
@@ -110,7 +103,6 @@ module VideoParser
                    match = match[1].match /\w+/
                    return match[0]
                  rescue
-                   p "vcode 解析错误"
                    ''
                  end
     end
@@ -122,7 +114,6 @@ module VideoParser
     # ↑ 这两个
     # 它们实际请求的是同样的真实视频文件
     def is_from_youku?
-      p vcode
       vcode.present?
     end
 
@@ -136,8 +127,9 @@ module VideoParser
       seconds = xml.at_css('v')['tm'].to_i / 1000.0
       f = xml.at_css('f').text
 
-      return [TudouVideoFile.new(f, seconds)]
-    rescue
+      return [VideoFile.new(f, seconds)]
+    rescue Exception => ex
+      pp ex.to_json
       return []
     end
   end
