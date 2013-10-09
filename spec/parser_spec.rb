@@ -1,5 +1,4 @@
 require File.expand_path(File.dirname(__FILE__) + "/spec_helper")
-require 'webmock/rspec'
 
 describe VideoParser::Parser do
   let(:url)  {"http://fakehost"}

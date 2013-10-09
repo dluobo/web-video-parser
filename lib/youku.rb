@@ -46,6 +46,7 @@ module VideoParser
     end
 
     def cover_url
+      return "" if !@parser.data
       @cover_url ||= @parser.data['data'][0]['logo']
     end
 
