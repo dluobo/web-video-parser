@@ -77,3 +77,5 @@ vl.videos     # 返回视频清单，格式如下
   ...
 ]
 ```
+
+参考 minpin/eshare 下 web_video 目录中的 tudou_video_list.rb, youku_video_list.rb 进行移植
