@@ -41,3 +41,41 @@ vp.files      # 返回视频真实文件地址和相关参数数组
 ```
 
 参考 minpin/eshare 下 web_video 目录中的 tudou_video.rb, sina_video.rb, youku_video.rb 进行移植
+
+--------------------
+
+视频列表解析部分
+
+优酷视频列表
+```ruby
+vl = VideoParser::YoukuList.new('http://www.youku.com/show_page/id_zbd8216202dfa11e2b2ac.html')
+vl.lid        # 返回视频列表 id, 不同网站的视频列表 id 可能名称不同
+vl.title      # 返回视频列表标题
+vl.cover_url  # 返回视频列表封面图片地址
+vl.desc       # 返回视频简介
+vl.videos     # 返回视频清单，格式如下
+[
+  {:title => ..., :url => ...},
+  {:title => ..., :url => ...},
+  {:title => ..., :url => ...},
+  ...
+]
+```
+
+土豆视频列表
+```ruby
+vl = VideoParser::TudouList.new('http://www.tudou.com/plcover/M9ovmjs6fkw/')
+vl.lid        # 返回视频列表 id, 不同网站的视频列表 id 可能名称不同
+vl.title      # 返回视频列表标题
+vl.cover_url  # 返回视频列表封面图片地址
+vl.desc       # 返回视频简介
+vl.videos     # 返回视频清单，格式如下
+[
+  {:title => ..., :url => ...},
+  {:title => ..., :url => ...},
+  {:title => ..., :url => ...},
+  ...
+]
+```
+
+参考 minpin/eshare 下 web_video 目录中的 tudou_video_list.rb, youku_video_list.rb 进行移植
