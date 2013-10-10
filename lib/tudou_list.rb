@@ -26,11 +26,21 @@ module VideoParser
 
     def videos
       @videos ||= list_json['message']['items'].map do |data|
-        {title: data["title"], cover_url: data["picUrl"], url: "http://www.tudou.com/programs/view/#{data["code"]}/"}
+        {
+          title:     data["title"],
+          cover_url: data["picUrl"],
+          code:      data["code"],
+          url:       video_url(data["code"]),
+          iid:       data["itemId"]
+        }
       end
     end
 
     private
+
+    def video_url(code)
+      "http://www.tudou.com/programs/view/#{code}/"
+    end
 
     def list_json
       @list_json ||= Parser.new(list_json_url, :json).data

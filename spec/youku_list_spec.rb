@@ -37,7 +37,7 @@ describe VideoParser::YoukuList do
     its(:pages)  {should be 2}
     its(:videos) {should include item}
 
-    its(:name) {should include "Photoshop视频教程全集"}
-    its(:desc) {should include "大量Photoshop视频教程"}
+    its(:title) {should include "Photoshop视频教程全集"}
+    its(:desc)  {should include "大量Photoshop视频教程"}
   end
 end

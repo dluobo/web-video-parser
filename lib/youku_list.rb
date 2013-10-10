@@ -13,13 +13,12 @@ module VideoParser
       end
     end
 
-    delegate :parse, :to => :list
-    delegate :lid, :to => :list
+    delegate :lid, :parse, :title, :desc, :videos, :to => :list
 
     class Playlist
       def initialize(url)
         @url = url
-        
+
         # url like
         # page_url
         # http://www.youku.com/show_page/id_zbd8216202dfa11e2b2ac.html
@@ -36,10 +35,12 @@ module VideoParser
       def show_point_url
         "http://www.youku.com/show_point_id_#{lid}.html?dt=json&__rt=1&__ro=reload_point"
       end
-      
+
       def get_tab_urls
         tab_urls = []
-        doc = Parser.new(show_point_url, :xml).data
+        page_parser = Parser.new(show_point_url, :xml)
+
+        doc = page_parser.data
         
         tabs = doc.css('#zySeriesTab li')
         if tabs.blank?
@@ -80,12 +81,23 @@ module VideoParser
         end
         chapters.delete_if {|x| x == nil}
         
-        return { :name => course_name, :desc => course_desc, :chapters => chapters }
-        
+        { :title => course_name, :desc => course_desc, :videos => chapters }
+      end
+
+      def data
+        @data ||= self.parse
+      end
+
+      def title
+        @title ||= self.data[:title]
+      end
+      
+      def desc
+        @title ||= self.data[:desc]
       end
 
       def videos
-        @videos ||= self.parse
+        @videos ||= self.data[:videos]
       end
     end
 
@@ -109,7 +121,7 @@ module VideoParser
         @pages ||= (count / 50.0).ceil
       end
 
-      def name
+      def title
         @course_title ||= course_info(".title .name")[0].content
       end
 
@@ -126,7 +138,7 @@ module VideoParser
       end
 
       def parse
-        {:name => course_name, :desc => course_desc, :chapters => items }
+        {:title => course_name, :desc => course_desc, :videos => items }
       end
 
       private
