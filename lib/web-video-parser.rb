@@ -6,6 +6,7 @@ require "request"
 require "youku"
 require "sina"
 require "youku_list"
+require "tudou_list"
 
 module VideoParser
   class Parser
