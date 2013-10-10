@@ -12,10 +12,4 @@ describe VideoParser::Sina do
     files.count.should > 0 
   }
 
-  describe VideoParser::Sina::Parser do
-    it {
-      xml = @sina_video.parser.get_xml
-      xml.should be_present
-    }
-  end
 end
