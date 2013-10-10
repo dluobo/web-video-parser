@@ -18,6 +18,14 @@ module VideoParser
       @uid ||= @url.split('/').last.split('-').first
     end
 
+    def title
+      @title ||= @parser.data.at_css("vname").content
+    end
+
+    def desc
+      ""
+    end
+
     def files
       xml = @parser.data
 
