@@ -7,6 +7,8 @@ describe VideoParser::Sina do
 
   it { @sina_video.uid.should == '96748194' }
 
+  it { @sina_video.title.should be_present}
+
   it {
     files = @sina_video.files
     files.count.should > 0 
